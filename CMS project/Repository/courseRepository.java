@@ -7,15 +7,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 
-import models.UserModel;
+import models.CourseModel;
 
-public class dataRepository {
+public class courseRepository {
     
-    private String path = "Data\\data.txt";
+    private String path = "Data\\course.txt";
     private File data;
 
-    public dataRepository()
+    public courseRepository()
     {
         CreateOrCheckFile();
         data = new File(path);
@@ -37,10 +39,10 @@ public class dataRepository {
         }
     }
 
-    public void WriteToFile(String userText, String pass, String  choice)
+    public void WriteToFile(String courseName, String courseText)
     {
         try {
-            Files.write(Paths.get("Data\\data.txt"),(userText + "-" + pass + "-"+ choice + "\n").getBytes(),StandardOpenOption.APPEND);
+            Files.write(Paths.get(path),(courseName + "-" + courseText + "\n").getBytes(),StandardOpenOption.APPEND);
 
           } catch (IOException err) {
             System.out.println("An error occurred while trying to write in file.");
@@ -49,42 +51,25 @@ public class dataRepository {
 
     }
 
-    private UserModel[] GetAll()
+    public List GetAll()
     {
-        UserModel[] users = new UserModel[0];
+        List courses = new ArrayList<CourseModel>();
         BufferedReader reader;
 		try {
 			reader = new BufferedReader(new FileReader(path));
 			String line = reader.readLine();
-            int lines = 0;
-            while (reader.readLine() != null) lines++;
-            users = new UserModel[lines];
-            lines=0;
 			while (line != null) {
 				String[] tempStr = line.split("-");
-                users[lines]= new UserModel(tempStr[0],tempStr[1],tempStr[2]);
-                lines++;
+                courses.add(new CourseModel(tempStr[0],tempStr[1]));
 				line = reader.readLine();
 			}
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        return users;
+        return courses;
     }
 
-    public UserModel CheckCredentials(String username, String password)
-    {
-        UserModel[] users = GetAll();
 
-        for (UserModel us : users) {
-            if(us.GetUsername().equals(username) && us.GetPass().equals(password))
-            {
-                return us;
-            }
-        }
-
-        return null;
-    }
 
 }

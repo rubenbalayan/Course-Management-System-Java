@@ -2,6 +2,7 @@
 import javax.swing.*;
 
 import Repository.dataRepository;
+import models.UserModel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -82,9 +83,16 @@ public class loginFrame extends JFrame implements ActionListener {
             for (char c : pwdText) {
                 pass+=c;
             }
-            if (dRepository.CheckCredentials(userText, pass)) {
+            UserModel user = dRepository.CheckCredentials(userText, pass);
+            if (user != null) {
                 JOptionPane.showMessageDialog(this, "Login Successful");
                 this.setVisible(false);
+                courseFrame courseF=new courseFrame(user);
+                courseF.setTitle("Courses");
+                courseF.setVisible(true);
+                courseF.setBounds(10,10,1000,700);
+                courseF.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                courseF.setResizable(false);
 
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid Username or Password");
